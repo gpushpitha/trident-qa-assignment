@@ -1,19 +1,23 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Strictly Ordered)', () => {
+test.describe('Section 1: Customer Journey Automated Suite (SC-001 to SC-028 Strictly Ordered)', () => {
 
   test.beforeEach(async ({ page }) => {
+    // Prevent Google Ads and Third-party overlays from blocking UI clicks
+    await page.route('**/*google*', route => route.abort());
+    await page.route('**/*doubleclick*', route => route.abort());
+    
     await page.goto('/products', { waitUntil: 'domcontentloaded' });
   });
 
   // ==========================================
-  // PRODUCT SEARCH (CJ-001 to CJ-007)
+  // PRODUCT SEARCH (SC-001 to SC-007)
   // ==========================================
 
   /**
-   * CJ-001: Search for valid product
+   * SC-001: Search for valid product
    */
-  test('CJ-001: Search for valid product "top"', async ({ page }) => {
+  test('SC-001: Search for valid product "top"', async ({ page }) => {
     await page.locator('#search_product').fill('top');
     await page.locator('#submit_search').click();
 
@@ -22,13 +26,14 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
     await expect(titleHeader).toHaveText('Searched Products');
 
     const productCards = page.locator('.product-image-wrapper');
+    await expect(productCards.first()).toBeVisible();
     expect(await productCards.count()).toBeGreaterThan(0);
   });
 
   /**
-   * CJ-002: Search for nonexistent product
+   * SC-002: Search for nonexistent product
    */
-  test('CJ-002: Search for nonexistent product', async ({ page }) => {
+  test('SC-002: Search for nonexistent product', async ({ page }) => {
     await page.locator('#search_product').fill('xyznonexistent12345');
     await page.locator('#submit_search').click();
 
@@ -37,42 +42,45 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-003: Search with empty input
+   * SC-003: Search with empty input
    */
-  test('CJ-003: Search with empty input', async ({ page }) => {
+  test('SC-003: Search with empty input', async ({ page }) => {
     await page.locator('#search_product').fill('');
     await page.locator('#submit_search').click();
 
     const productCards = page.locator('.product-image-wrapper');
+    await expect(productCards.first()).toBeVisible();
     expect(await productCards.count()).toBeGreaterThan(0);
   });
 
   /**
-   * CJ-004: Search with uppercase text
+   * SC-004: Search with uppercase text
    */
-  test('CJ-004: Search with uppercase text "TOP"', async ({ page }) => {
+  test('SC-004: Search with uppercase text "TOP"', async ({ page }) => {
     await page.locator('#search_product').fill('TOP');
     await page.locator('#submit_search').click();
 
     const productCards = page.locator('.product-image-wrapper');
+    await expect(productCards.first()).toBeVisible();
     expect(await productCards.count()).toBeGreaterThan(0);
   });
 
   /**
-   * CJ-005: Search with leading/trailing spaces
+   * SC-005: Search with leading/trailing spaces
    */
-  test('CJ-005: Search with leading/trailing spaces " top "', async ({ page }) => {
+  test('SC-005: Search with leading/trailing spaces " top "', async ({ page }) => {
     await page.locator('#search_product').fill(' top ');
     await page.locator('#submit_search').click();
 
     const productCards = page.locator('.product-image-wrapper');
+    await expect(productCards.first()).toBeVisible();
     expect(await productCards.count()).toBeGreaterThan(0);
   });
 
   /**
-   * CJ-006: Search using keyboard Enter key
+   * SC-006: Search using keyboard Enter key
    */
-  test('CJ-006: Search using keyboard Enter key', async ({ page }) => {
+  test('SC-006: Search using keyboard Enter key', async ({ page }) => {
     const searchInput = page.locator('#search_product');
     await searchInput.fill('top');
     await searchInput.press('Enter');
@@ -82,9 +90,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-007: Verify product details in search results
+   * SC-007: Verify product details in search results
    */
-  test('CJ-007: Verify product details in search results', async ({ page }) => {
+  test('SC-007: Verify product details in search results', async ({ page }) => {
     await page.locator('#search_product').fill('top');
     await page.locator('#submit_search').click();
 
@@ -95,13 +103,13 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
 
 
   // ==========================================
-  // PRODUCT DETAILS (CJ-008 to CJ-014)
+  // PRODUCT DETAILS (SC-008 to SC-014)
   // ==========================================
 
   /**
-   * CJ-008: Open product details
+   * SC-008: Open product details
    */
-  test('CJ-008: Open product details page', async ({ page }) => {
+  test('SC-008: Open product details page', async ({ page }) => {
     await page.locator('#search_product').fill('top');
     await page.locator('#submit_search').click();
 
@@ -110,9 +118,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-009: Verify product name
+   * SC-009: Verify product name
    */
-  test('CJ-009: Verify product name on detail page', async ({ page }) => {
+  test('SC-009: Verify product name on detail page', async ({ page }) => {
     await page.locator('#search_product').fill('top');
     await page.locator('#submit_search').click();
 
@@ -124,9 +132,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-010: Verify product price
+   * SC-010: Verify product price
    */
-  test('CJ-010: Verify product price on detail page', async ({ page }) => {
+  test('SC-010: Verify product price on detail page', async ({ page }) => {
     await page.locator('#search_product').fill('top');
     await page.locator('#submit_search').click();
 
@@ -138,9 +146,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-011: Verify main product image
+   * SC-011: Verify main product image
    */
-  test('CJ-011: Verify main product image loads', async ({ page }) => {
+  test('SC-011: Verify main product image loads', async ({ page }) => {
     await page.goto('/product_details/1');
 
     const mainImg = page.locator('.view-product img');
@@ -151,9 +159,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-012: Change quantity from 1 to 2
+   * SC-012: Change quantity from 1 to 2
    */
-  test('CJ-012: Change quantity from 1 to 2', async ({ page }) => {
+  test('SC-012: Change quantity from 1 to 2', async ({ page }) => {
     await page.goto('/product_details/1');
 
     const qtyInput = page.locator('#quantity');
@@ -162,9 +170,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-013: Validate invalid quantity
+   * SC-013: Validate invalid quantity
    */
-  test('CJ-013: Validate invalid quantity handling', async ({ page }) => {
+  test('SC-013: Validate invalid quantity handling', async ({ page }) => {
     await page.goto('/product_details/1');
     const qtyInput = page.locator('#quantity');
 
@@ -176,9 +184,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-014: Keyboard navigation accessibility
+   * SC-014: Keyboard navigation accessibility
    */
-  test('CJ-014: Keyboard navigation Tab and Enter on PDP', async ({ page }) => {
+  test('SC-014: Keyboard navigation Tab and Enter on PDP', async ({ page }) => {
     await page.goto('/product_details/1');
 
     await page.keyboard.press('Tab');
@@ -192,13 +200,13 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
 
 
   // ==========================================
-  // SHOPPING CART (CJ-015 to CJ-022)
+  // SHOPPING CART (SC-015 to SC-022)
   // ==========================================
 
   /**
-   * CJ-015: Add product to cart
+   * SC-015: Add product to cart
    */
-  test('CJ-015: Add product to cart', async ({ page }) => {
+  test('SC-015: Add product to cart', async ({ page }) => {
     await page.goto('/product_details/1');
     await page.locator('button.cart').click();
 
@@ -207,9 +215,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-016: Verify cart product name
+   * SC-016: Verify cart product name
    */
-  test('CJ-016: Verify cart product name', async ({ page }) => {
+  test('SC-016: Verify cart product name', async ({ page }) => {
     await page.goto('/product_details/1');
     const pdpName = await page.locator('.product-information h2').innerText();
 
@@ -221,9 +229,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-017: Verify cart unit price
+   * SC-017: Verify cart unit price
    */
-  test('CJ-017: Verify cart unit price', async ({ page }) => {
+  test('SC-017: Verify cart unit price', async ({ page }) => {
     await page.goto('/product_details/1');
     const pdpPriceText = await page.locator('.product-information span span').innerText();
     const unitPrice = parseInt(pdpPriceText.replace(/\D/g, ''), 10);
@@ -238,9 +246,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-018: Verify cart quantity
+   * SC-018: Verify cart quantity
    */
-  test('CJ-018: Verify cart quantity set to 2', async ({ page }) => {
+  test('SC-018: Verify cart quantity set to 2', async ({ page }) => {
     await page.goto('/product_details/1');
     await page.locator('#quantity').fill('2');
     await page.locator('button.cart').click();
@@ -251,9 +259,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-019: Verify cart subtotal/total
+   * SC-019: Verify cart subtotal/total
    */
-  test('CJ-019: Verify cart subtotal (Unit Price x Quantity)', async ({ page }) => {
+  test('SC-019: Verify cart subtotal (Unit Price x Quantity)', async ({ page }) => {
     await page.goto('/product_details/1');
     const pdpPriceText = await page.locator('.product-information span span').innerText();
     const unitPrice = parseInt(pdpPriceText.replace(/\D/g, ''), 10);
@@ -269,9 +277,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-020: Remove product from cart
+   * SC-020: Remove product from cart
    */
-  test('CJ-020: Remove product from cart', async ({ page }) => {
+  test('SC-020: Remove product from cart', async ({ page }) => {
     await page.goto('/product_details/1');
     await page.locator('button.cart').click();
     await page.locator('u:has-text("View Cart")').click();
@@ -281,18 +289,18 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-021: Verify empty cart state
+   * SC-021: Verify empty cart state
    */
-  test('CJ-021: Verify empty cart state', async ({ page }) => {
+  test('SC-021: Verify empty cart state', async ({ page }) => {
     await page.goto('/view_cart');
     const emptyNotice = page.locator('#empty_cart');
     await expect(emptyNotice).toBeVisible();
   });
 
   /**
-   * CJ-022: Add same product twice
+   * SC-022: Add same product twice
    */
-  test('CJ-022: Add same product twice to verify quantity increment', async ({ page }) => {
+  test('SC-022: Add same product twice to verify quantity increment', async ({ page }) => {
     await page.goto('/product_details/1');
     await page.locator('button.cart').click();
     await page.locator('.modal-footer button').click();
@@ -306,13 +314,13 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
 
 
   // ==========================================
-  // CHECKOUT & RESPONSIVE UI (CJ-023 to CJ-028)
+  // CHECKOUT & RESPONSIVE UI (SC-023 to SC-028)
   // ==========================================
 
   /**
-   * CJ-023: Proceed to checkout
+   * SC-023: Proceed to checkout
    */
-  test('CJ-023: Proceed to checkout from cart', async ({ page }) => {
+  test('SC-023: Proceed to checkout from cart', async ({ page }) => {
     await page.goto('/product_details/1');
     await page.locator('button.cart').click();
     await page.locator('u:has-text("View Cart")').click();
@@ -322,9 +330,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-024: Checkout without login
+   * SC-024: Checkout without login
    */
-  test('CJ-024: Checkout without login triggers authentication modal', async ({ page }) => {
+  test('SC-024: Checkout without login triggers authentication modal', async ({ page }) => {
     await page.goto('/product_details/1');
     await page.locator('button.cart').click();
     await page.locator('u:has-text("View Cart")').click();
@@ -335,9 +343,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-025: Desktop layout (1920x1080)
+   * SC-025: Desktop layout (1920x1080)
    */
-  test('CJ-025: Desktop layout (1920x1080)', async ({ page }) => {
+  test('SC-025: Desktop layout (1920x1080)', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto('/products');
 
@@ -346,9 +354,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-026: Mobile layout at 390 x 844
+   * SC-026: Mobile layout at 390 x 844
    */
-  test('CJ-026: Mobile layout at 390 x 844 viewport', async ({ page }) => {
+  test('SC-026: Mobile layout at 390 x 844 viewport', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/products');
 
@@ -358,13 +366,14 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
     await page.locator('#submit_search').click();
 
     const productCards = page.locator('.product-image-wrapper');
+    await expect(productCards.first()).toBeVisible();
     expect(await productCards.count()).toBeGreaterThan(0);
   });
 
   /**
-   * CJ-027: Check horizontal overflow on mobile
+   * SC-027: Check horizontal overflow on mobile
    */
-  test('CJ-027: Check horizontal overflow on mobile (390 x 844)', async ({ page }) => {
+  test('SC-027: Check horizontal overflow on mobile (390 x 844)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/products');
 
@@ -375,9 +384,9 @@ test.describe('Section 1: Customer Journey Automated Suite (CJ-001 to CJ-028 Str
   });
 
   /**
-   * CJ-028: Add to cart on mobile
+   * SC-028: Add to cart on mobile
    */
-  test('CJ-028: Add to cart on mobile viewport', async ({ page }) => {
+  test('SC-028: Add to cart on mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/product_details/1');
 
